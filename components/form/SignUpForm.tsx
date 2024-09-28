@@ -36,7 +36,7 @@ const SignUpForm = () => {
             password: values.password
         })
     })
-
+console.log(response)
     if(response.ok){
         router.push('/sign-in')
 
