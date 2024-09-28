@@ -1,12 +1,13 @@
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
 import {hash} from 'bcrypt'
+import { FormSchema } from "@/app/FormSchema";
 
 export async function POST(req: Request){
     try{
         const body=await req.json();
 
-        const {email, username, password} =body;
+        const {email, username, password} =FormSchema.parse(body);
 
         //check if email already exists
 

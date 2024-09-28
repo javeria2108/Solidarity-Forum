@@ -2,6 +2,8 @@
 
 import { useForm } from 'react-hook-form';
 import {signIn} from 'next-auth/react'
+import { useToast } from "@/hooks/use-toast"
+
 import {
   Form,
   FormControl,
@@ -28,6 +30,8 @@ const FormSchema = z.object({
 
 const SignInForm = () => {
   const router=useRouter()
+  const { toast } = useToast()
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -46,9 +50,14 @@ const SignInForm = () => {
     console.log(signInData)
 
     if(signInData?.error){
-      console.log(signInData.error)
+      toast({
+        title: "Oops",
+        description: "There was an error signing in",
+        variant: 'destructive'
+      })
     } else{
       console.log("success")
+      router.refresh()
       router.push('/')
     }
   };

@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
-
+import { useToast } from "@/hooks/use-toast"
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../ui/input';
@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 
 const SignUpForm = () => {
     const router= useRouter();
+    const { toast } = useToast()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -41,7 +42,11 @@ console.log(response)
         router.push('/sign-in')
 
     }else{
-        console.error("Registration failed")
+      toast({
+        title: "Oops",
+        description: "There was an error signing up",
+        variant: 'destructive'
+      })
     }
   };
 
@@ -119,7 +124,7 @@ console.log(response)
       </div>
       <GoogleSignInButton>Sign up with Google</GoogleSignInButton>
       <p className='text-center text-sm text-gray-600 mt-2'>
-        If you don&apos;t have an account, please&nbsp;
+        If you already have an account, please&nbsp;
         <Link className='text-blue-500 hover:underline' href='/sign-in'>
           Sign in
         </Link>
