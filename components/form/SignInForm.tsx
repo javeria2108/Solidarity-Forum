@@ -1,6 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import {signIn} from 'next-auth/react'
 import {
   Form,
   FormControl,
@@ -15,6 +16,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import GoogleSignInButton from '../GoogleSignInButton';
+import { useRouter } from 'next/navigation';
 
 const FormSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email'),
@@ -25,6 +27,7 @@ const FormSchema = z.object({
 });
 
 const SignInForm = () => {
+  const router=useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -33,8 +36,21 @@ const SignInForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof FormSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    const signInData= await signIn('credentials',{
+      redirect: false, // Add this line
+
+      email: values.email,
+      password: values.password,
+    })
+    console.log(signInData)
+
+    if(signInData?.error){
+      console.log(signInData.error)
+    } else{
+      console.log("success")
+      router.push('/')
+    }
   };
 
   return (
