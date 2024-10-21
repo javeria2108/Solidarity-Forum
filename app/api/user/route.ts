@@ -5,10 +5,17 @@ import { FormSchema } from "@/app/FormSchema";
 
 export async function POST(req: Request){
     try{
+        console.log("POST request received at /api/user");
         const body=await req.json();
-
-        const {email, username, password} =FormSchema.parse(body);
-
+        console.log("Request body:", body);
+        
+        try {
+            const { email, username, password } = FormSchema.parse(body);
+        } catch (validationError) {
+            console.error("Validation error:", validationError);
+            return NextResponse.json({ message: "Invalid input", error: validationError }, { status: 400 });
+        }
+        const { email, username, password } = FormSchema.parse(body);
         //check if email already exists
 
         const existingUserByEmail= await db.user.findUnique({
@@ -38,8 +45,10 @@ export async function POST(req: Request){
             }
         })
         const {password: newUserPassword,...rest}=newUser
+        console.log("New user created:", newUser);
         return NextResponse.json({user:rest, message: "User created successfully"},{status: 201});
     }catch(error){
-        return NextResponse.json({message: "Something went wrong"},{status: 500});
+        return NextResponse.json({message: error},{status: 500});
+        console.log(error)
     }
 }
