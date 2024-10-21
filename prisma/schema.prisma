@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String       @id @default(uuid())
+  email          String       @unique
+  password       String
+  username       String       @unique
+  name           String
+  role           UserRole     @default(USER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  events         Event[]      @relation("OrganizerEvents")
+  registrations  Registration[]
+  donations      Donation[]
+}
+
+model Event {
+  id              String        @id @default(uuid())
+  title           String
+  description     String
+  startDate       DateTime
+  endDate         DateTime
+  location        String
+  capacity        Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  organizerId     String
+  organizer       User          @relation(fields: [organizerId], references: [id], name: "OrganizerEvents")
+  registrations   Registration[]
+  donations       Donation[]
+}
+
+model Registration {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  userId      String
+  eventId     String
+  user        User     @relation(fields: [userId], references: [id])
+  event       Event    @relation(fields: [eventId], references: [id])
+}
+
+model Donation {
+  id          String   @id @default(uuid())
+  amount      Float
+  currency    String
+  userId      String
+  eventId     String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  event       Event    @relation(fields: [eventId], references: [id])
+}
+
+enum UserRole {
+  ADMIN
+  ORGANIZER
+  USER
+}
