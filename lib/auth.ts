@@ -24,8 +24,17 @@ export const authOptions: NextAuthOptions = {
             return null
            }
            const existingUser=await db.user.findUnique({
-            where:{email: credentials?.email}
+            where:{email: credentials?.email},
+            select: { // Ensure to select the role here
+              id: true,
+              username: true,
+              email: true,
+              role: true, // Make sure to include role
+              password: true
+          },
            });
+
+           console.log("Fetched user:", existingUser); // Log fetched user
            if(!existingUser){
             return null;
            }
@@ -38,9 +47,28 @@ export const authOptions: NextAuthOptions = {
            return{
             id: existingUser.id + '',
             username: existingUser.username,
-            email: existingUser.email
+            email: existingUser.email,
+            role: existingUser.role
            }
           }
         })
-      ]
+      ],
+      callbacks: {
+        async jwt({ token, user }) {
+          console.log("User during JWT callback:", user); // Log the user
+          if (user) {
+              token.id = user.id;
+              token.role = user.role;  // Add role to the token
+          }
+          return token;
+      },
+      async session({ session, token }) {
+        console.log("Token during session callback:", token); // Log the token
+        if (token) {
+            session.user.id = token.id as string;
+            session.user.role = token.role as string;  // Ensure the session has the role
+        }
+        return session;
+    },
+    },
   }

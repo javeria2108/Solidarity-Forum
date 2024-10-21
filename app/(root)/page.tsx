@@ -3,13 +3,19 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import UserDashboard from "../(dashboard)/user-dashboard/page";
+import OrgDashboard from "../(dashboard)/org-dashboard/page";
 
-export default function Home() {
-  const session=getServerSession(authOptions)
-  console.log(session)
+export default async function Home() {
+  const session=await getServerSession(authOptions)
+  const userRole= session?.user?.role
+
+  console.log("Session:", session);
+  console.log("User role:", userRole);
   return (
     <>
-    <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
+    <section className="bg-primary-50 bg-contain py-5 md:py-10">
       <div className="wrapper grid grid-cols-1 gap-5 md:grid-cols-2 2xl:gap-0 ">
         <div className="flex flex-col justify-center gap-8 mx-10 sm:mx-20">
           <h1 className="h1-bold">Empowering Communities Against Injustice</h1>
@@ -28,6 +34,17 @@ export default function Home() {
         </Image>
       </div>
 
+    </section>
+
+    <section id="events" className="wrapper my-8 mx-10 sm:mx-20 flex flex-col gap-8 md:gap-12 ">
+      <h2 className="h2-bold">Trusted by <br/> hundreds of Organisations</h2>
+      <div className="flex w-full flex-col gap-5 md:flex-row">
+        Search
+        CategoryFilter
+      </div>
+    <div>
+      {userRole==='USER'?<UserDashboard/> : <OrgDashboard/> }
+    </div>
     </section>
     </>
   );
