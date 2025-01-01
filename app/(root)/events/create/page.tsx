@@ -1,10 +1,12 @@
 import EventForm from '@/components/shared/EventForm'
 import React from 'react'
+import { useSession } from 'next-auth/react';
 
 const CreateEvent = () => {
-    //pass the id of the current user
-    //extract user id
-    //pass user id to event form
+  const { data: session } = useSession();
+
+  // Extract user ID from the session
+  const userId = session?.user?.id;
   return (
     <>
     <section className='bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10'>
@@ -12,7 +14,7 @@ const CreateEvent = () => {
     </section>
     <div className='wrapper my-8'>
 
-        <EventForm type='Create'/>
+    <EventForm type='Create' userId={userId!} />
     </div>
     </>
   )

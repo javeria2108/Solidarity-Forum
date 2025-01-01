@@ -1,7 +1,7 @@
 'use client'
 
 type EventFormProps = {
-   // userId: String
+    userId: String
     type: "Create" | "Update"
 }
 //user id and type inputs
