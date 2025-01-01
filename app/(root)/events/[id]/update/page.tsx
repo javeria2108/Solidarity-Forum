@@ -1,3 +1,4 @@
+'use client'
 import EventForm from '@/components/shared/EventForm'
 import React from 'react'
 import { useSession } from 'next-auth/react';
