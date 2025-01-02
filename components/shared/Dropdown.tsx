@@ -1,4 +1,11 @@
 import React from 'react'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 
 type dropDownProps={
     value?: string
@@ -6,7 +13,17 @@ type dropDownProps={
 }
 const Dropdown = ({value, onChangeHandler}: dropDownProps)  => {
   return (
-    <div>Dropdown</div>
+    <Select onValueChange={onChangeHandler} defaultValue={value}>
+        <SelectTrigger className="select-field">
+            <SelectValue placeholder="Category" />
+        </SelectTrigger>
+        <SelectContent>
+            <SelectItem value="light">Light</SelectItem>
+            <SelectItem value="dark">Dark</SelectItem>
+            <SelectItem value="system">System</SelectItem>
+        </SelectContent>
+</Select>
+
   )
 }
 
