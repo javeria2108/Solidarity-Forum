@@ -1,9 +1,9 @@
 ## Solidarity Forum
 
-Overview
+## Overview
 This project is designed to enable organizations and individuals to come together and combat social injustices. The platform allows users to create and participate in events, register for causes, and make donations, providing a collaborative environment for driving meaningful change.
 
-Features
+## Features
 User Authentication: Secure login and registration for users, with roles such as Admin, Organizer, and User.
 Event Management: Organizers can create and manage events, while users can register for events.
 Donations: Users can donate to specific events with tracking of donation details.
