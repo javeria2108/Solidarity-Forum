@@ -1,4 +1,4 @@
-# Project Name  
+# Solidarity Forum
 
 Empowering Communities Against Injustice  
 
