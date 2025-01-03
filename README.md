@@ -1,156 +1,83 @@
-Event Management Platform
+## Solidarity Forum
 
 Overview
-
-This platform is a comprehensive event management system that allows users to create, manage, and participate in events. It provides role-based functionality for users, organizers, and administrators. The project is currently under development and is built using Prisma, PostgreSQL, Next.js, and Supabase.
+This project is designed to enable organizations and individuals to come together and combat social injustices. The platform allows users to create and participate in events, register for causes, and make donations, providing a collaborative environment for driving meaningful change.
 
 Features
-
-Role-Based Access: Separate roles for users, organizers, and admins.
-
-Event Management:
-
-Create, update, and delete events.
-
-Set event details like title, description, location, capacity, and dates.
-
-User Participation:
-
-Register for events.
-
-Donate to events with specified amounts and currencies.
-
-Category Support (Planned):
-
-Categorize events for better organization and filtering.
-
-Real-Time Notifications (Future Work):
-
-Notify users of updates, registrations, or cancellations.
-
-Responsive Design:
-
-Optimized for various devices.
-
+User Authentication: Secure login and registration for users, with roles such as Admin, Organizer, and User.
+Event Management: Organizers can create and manage events, while users can register for events.
+Donations: Users can donate to specific events with tracking of donation details.
+Role-Based Dashboards: Different dashboards for users and organizers to streamline their activities.
+Responsive Design: The platform is fully responsive and optimized for devices of all sizes.
 Tech Stack
-
-Frontend: Next.js with Tailwind CSS
-
-Backend: Prisma ORM, Supabase, PostgreSQL
-
-Authentication: NextAuth.js
-
-Deployment: Vercel
-
-Prisma Schema
-
-The project uses a well-structured Prisma schema for database interactions. Here are the primary models:
-
-User Model
-
-Defines user data, roles, and relationships with events, registrations, and donations.
-
-model User {
-  id             String       @id @default(uuid())
-  email          String       @unique
-  password       String
-  username       String       @unique
-  name           String
-  role           UserRole     @default(USER)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  events         Event[]      @relation("OrganizerEvents")
-  registrations  Registration[]
-  donations      Donation[]
-}
-
-Event Model
-
-Defines event details and relationships with users, registrations, and donations.
-
-model Event {
-  id              String        @id @default(uuid())
-  title           String
-  description     String
-  startDate       DateTime
-  endDate         DateTime
-  location        String
-  capacity        Int
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  organizerId     String
-  organizer       User          @relation(fields: [organizerId], references: [id], name: "OrganizerEvents")
-  registrations   Registration[]
-  donations       Donation[]
-}
-
+Frontend: Next.js, Tailwind CSS, TypeScript
+Backend: Prisma, PostgreSQL, NextAuth.js
+Additional Tools: Supabase (for real-time capabilities), Stripe (for payment processing)
 Installation
-
-Prerequisites
-
-Node.js (>= 16.x)
-
-PostgreSQL
-
-Prisma CLI (npm install -g prisma)
-
-Steps
+Follow these steps to set up the project locally:
 
 Clone the repository:
 
-git clone https://github.com/your-username/event-management-platform.git
-cd event-management-platform
-
+bash
+Copy code
+git clone https://github.com/your-username/repository-name.git  
+cd repository-name  
 Install dependencies:
 
-npm install
+bash
+Copy code
+npm install  
+Set up the environment variables:
+Create a .env file in the root directory and add the required environment variables:
 
-Configure the environment variables:
+env
+Copy code
+DATABASE_URL=your_database_url  
+NEXTAUTH_SECRET=your_nextauth_secret  
+NEXTAUTH_URL=your_nextauth_url  
+STRIPE_API_KEY=your_stripe_api_key  
+SUPABASE_URL=your_supabase_url  
+SUPABASE_KEY=your_supabase_key  
+Run database migrations:
 
-Create a .env file in the root directory.
-
-Add the following:
-
-DATABASE_URL=your_database_url
-NEXTAUTH_SECRET=your_nextauth_secret
-NEXTAUTH_URL=http://localhost:3000
-
-Apply database migrations:
-
-npx prisma migrate dev
-
+bash
+Copy code
+npx prisma migrate dev  
 Start the development server:
 
-npm run dev
+bash
+Copy code
+npm run dev  
+Open the app in your browser:
 
-Open the application in your browser:
-
-http://localhost:3000
-
-Development Roadmap
-
-
-
+arduino
+Copy code
+http://localhost:3000  
+Usage
+Admins: Manage platform-wide configurations and oversee users and events.
+Organizers: Create, edit, and manage events for the community.
+Users: Register for events, make donations, and participate in causes.
+Roadmap
+Add a Category feature for events to improve discoverability.
+Implement analytics dashboards for admins and organizers.
+Integrate additional payment gateways.
+Add localization and multi-language support.
 Contributing
-
-We welcome contributions! If you'd like to contribute:
+We welcome contributions! Follow these steps to contribute:
 
 Fork the repository.
-
 Create a new branch:
-
-git checkout -b feature/your-feature-name
-
+bash
+Copy code
+git checkout -b feature-name  
 Commit your changes:
-
-git commit -m "Add your feature description"
-
-Push to the branch:
-
-git push origin feature/your-feature-name
-
+bash
+Copy code
+git commit -m "Add feature-name"  
+Push the branch to your fork:
+bash
+Copy code
+git push origin feature-name  
 Open a pull request.
-
 License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License.
