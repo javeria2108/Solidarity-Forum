@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "../ui/textarea"
 import { eventFormSchema } from "@/lib/validator"
 import { eventDefaultValues } from "@/constants"
 
@@ -52,6 +53,20 @@ const EventForm = ({type} : EventFormProps) => {
             <FormItem className="w-full">
               <FormControl>
                 <Input placeholder="Event title" {...field}
+                className="input-field" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+<FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormControl>
+                <Textarea placeholder="Description" {...field}
                 className="input-field" />
               </FormControl>
               <FormMessage />
