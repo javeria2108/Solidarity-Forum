@@ -65,9 +65,21 @@ const EventForm = ({type} : EventFormProps) => {
           name="description"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormControl>
+              <FormControl className="h-72">
                 <Textarea placeholder="Description" {...field}
-                className="input-field" />
+                className="textarea rounded-2xl" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormControl>
+                
               </FormControl>
               <FormMessage />
             </FormItem>
