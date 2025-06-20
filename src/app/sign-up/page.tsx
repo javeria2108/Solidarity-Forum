@@ -94,12 +94,12 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-100 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="p-6">
         <Link 
           href="/" 
-          className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
@@ -114,29 +114,29 @@ export default function SignUpPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Join Solidarity Forum
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-500 mb-6">
               Connect with causes that matter. Make a difference together.
             </p>
             
             {/* Benefits */}
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Heart className="w-6 h-6 text-emerald-600" />
+                <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Heart className="w-6 h-6 text-red-500" />
                 </div>
-                <p className="text-xs text-gray-600">Support Causes</p>
+                <p className="text-xs text-gray-500">Support Causes</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Users className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Users className="w-6 h-6 text-blue-500" />
                 </div>
-                <p className="text-xs text-gray-600">Join Community</p>
+                <p className="text-xs text-gray-500">Join Community</p>
               </div>
               <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Globe className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Globe className="w-6 h-6 text-gray-700" />
                 </div>
-                <p className="text-xs text-gray-600">Global Impact</p>
+                <p className="text-xs text-gray-500">Global Impact</p>
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@ export default function SignUpPage() {
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
+                  <Label htmlFor="firstName" className="text-gray-900">First Name</Label>
                   <Input
                     id="firstName"
                     name="firstName"
@@ -155,10 +155,11 @@ export default function SignUpPage() {
                     value={formData.firstName}
                     onChange={handleChange}
                     required
+                    className="border-gray-300 focus:border-red-500 focus:ring-red-500"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
+                  <Label htmlFor="lastName" className="text-gray-900">Last Name</Label>
                   <Input
                     id="lastName"
                     name="lastName"
@@ -167,12 +168,13 @@ export default function SignUpPage() {
                     value={formData.lastName}
                     onChange={handleChange}
                     required
+                    className="border-gray-300 focus:border-red-500 focus:ring-red-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-gray-900">Email</Label>
                 <Input
                   id="email"
                   name="email"
@@ -181,11 +183,12 @@ export default function SignUpPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  className="border-gray-300 focus:border-red-500 focus:ring-red-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-gray-900">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -195,7 +198,7 @@ export default function SignUpPage() {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="pr-10"
+                    className="pr-10 border-gray-300 focus:border-red-500 focus:ring-red-500"
                   />
                   <button
                     type="button"
@@ -212,7 +215,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword" className="text-gray-900">Confirm Password</Label>
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -221,12 +224,13 @@ export default function SignUpPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
+                  className="border-gray-300 focus:border-red-500 focus:ring-red-500"
                 />
               </div>
 
               <Button 
                 type="submit" 
-                className="w-full bg-emerald-600 hover:bg-emerald-700"
+                className="w-full bg-red-500 hover:bg-red-600 text-white"
                 disabled={loading}
               >
                 {loading ? "Creating account..." : "Create Account"}
@@ -236,11 +240,11 @@ export default function SignUpPage() {
 
           {/* Additional Links */}
           <div className="text-center mt-6">
-            <p className="text-gray-600">
+            <p className="text-gray-500">
               Already have an account?{' '}
               <Link 
                 href="/sign-in" 
-                className="text-emerald-600 hover:text-emerald-700 font-medium"
+                className="text-red-500 hover:text-red-600 font-medium"
               >
                 Sign in here
               </Link>

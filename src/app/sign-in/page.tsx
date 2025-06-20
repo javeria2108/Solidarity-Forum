@@ -56,12 +56,12 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="p-6">
         <Link 
           href="/" 
-          className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+          className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
@@ -76,7 +76,7 @@ export default function SignInPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Solidarity Forum
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-500">
               Welcome back! Sign in to continue your journey.
             </p>
           </div>
@@ -85,7 +85,7 @@ export default function SignInPage() {
           <div className="bg-white rounded-lg shadow-lg p-6">
             <form onSubmit={handleSignIn} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-gray-900">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -93,12 +93,12 @@ export default function SignInPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full"
+                  className="w-full border-gray-300 focus:border-red-500 focus:ring-red-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-gray-900">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -107,7 +107,7 @@ export default function SignInPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pr-10"
+                    className="w-full pr-10 border-gray-300 focus:border-red-500 focus:ring-red-500"
                   />
                   <button
                     type="button"
@@ -125,7 +125,7 @@ export default function SignInPage() {
 
               <Button 
                 type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full bg-red-500 hover:bg-red-600 text-white"
                 disabled={loading}
               >
                 {loading ? "Signing in..." : "Sign In"}
@@ -135,7 +135,7 @@ export default function SignInPage() {
             <div className="mt-4 text-center">
               <Link 
                 href="/forgot-password" 
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-blue-500 hover:text-blue-600"
               >
                 Forgot your password?
               </Link>
@@ -144,11 +144,11 @@ export default function SignInPage() {
 
           {/* Additional Links */}
           <div className="text-center mt-6">
-            <p className="text-gray-600">
+            <p className="text-gray-500">
               Don't have an account?{' '}
               <Link 
                 href="/sign-up" 
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="text-red-500 hover:text-red-600 font-medium"
               >
                 Sign up here
               </Link>
