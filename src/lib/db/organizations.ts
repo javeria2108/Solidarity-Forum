@@ -52,7 +52,7 @@ export async function getOrganizationStats(organizationId: string) {
           sessions: true,
         },
       },
-      reviews: true,
+      reviewsReceived: true,
     },
   });
 
@@ -66,11 +66,11 @@ export async function getOrganizationStats(organizationId: string) {
     (assignment: { status: string }) => assignment.status === "COMPLETED"
   ).length;
   const averageRating =
-    organization.reviews.length > 0
-      ? organization.reviews.reduce(
+    organization.reviewsReceived.length > 0
+      ? organization.reviewsReceived.reduce(
           (sum: any, review: { rating: any }) => sum + review.rating,
           0
-        ) / organization.reviews.length
+        ) / organization.reviewsReceived.length
       : 0;
 
   return {
