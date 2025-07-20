@@ -1,0 +1,338 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+// User profiles extending Supabase auth
+model Profile {
+  id              String   @id @db.Uuid
+  email           String   @unique
+  fullName        String   @map("full_name")
+  userType        UserType @map("user_type")
+  avatar          String?
+  bio             String?
+  phone           String?
+  location        String?
+  website         String?
+  verified        Boolean  @default(false)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  volunteer        Volunteer?
+  organization     Organization?
+  sentMessages     Message[] @relation("MessageSender")
+  receivedMessages Message[] @relation("MessageReceiver")
+
+  @@map("profiles")
+}
+
+model Volunteer {
+  id               String      @id @default(uuid()) @db.Uuid
+  profileId        String      @unique @map("profile_id") @db.Uuid
+  profile          Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  skills           VolunteerSkill[]
+  availability     VolunteerAvailability[]
+  languages        String[]
+  experience       String?
+  education        String?
+  certifications   String[]
+  
+  totalHours       Int         @default(0) @map("total_hours")
+  impactScore      Float       @default(0.0) @map("impact_score")
+  completedTasks   Int         @default(0) @map("completed_tasks")
+
+  applications     Application[]
+  assignments      Assignment[]
+  reviewsReceived  Review[] @relation("VolunteerReviewsReceived")
+  reviewsGiven     Review[] @relation("VolunteerReviewsGiven")
+
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+
+  @@map("volunteers")
+}
+
+model Organization {
+  id                String        @id @default(uuid()) @db.Uuid
+  profileId         String        @unique @map("profile_id") @db.Uuid
+  profile           Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  organizationName  String        @map("organization_name")
+  organizationType  String        @map("organization_type")
+  registrationNumber String?      @map("registration_number")
+  description       String?
+  focusAreas        String[]      @map("focus_areas")
+  operatingRegions  String[]      @map("operating_regions")
+
+  totalRequests     Int           @default(0) @map("total_requests")
+  activeVolunteers  Int           @default(0) @map("active_volunteers")
+  completedProjects Int           @default(0) @map("completed_projects")
+  averageRating     Float         @default(0.0) @map("average_rating")
+
+  opportunities     Opportunity[]
+  applications      Application[]
+  assignments       Assignment[]
+  reviewsReceived   Review[] @relation("OrgReviewsReceived")
+  reviewsGiven      Review[] @relation("OrgReviewsGiven")
+
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  @@map("organizations")
+}
+
+model Opportunity {
+  id              String             @id @default(uuid()) @db.Uuid
+  organizationId  String             @map("organization_id") @db.Uuid
+  organization    Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  title           String
+  description     String
+  category        OpportunityCategory
+  type            OpportunityType
+  urgency         UrgencyLevel
+  
+  skillsNeeded    String[]           @map("skills_needed")
+  timeCommitment  String             @map("time_commitment")
+  location        String
+  isRemote        Boolean            @default(false) @map("is_remote")
+  
+  requirements    String?
+  benefits        String?
+  startDate       DateTime?          @map("start_date")
+  endDate         DateTime?          @map("end_date")
+  
+  maxVolunteers   Int                @default(1) @map("max_volunteers")
+  status          OpportunityStatus  @default(ACTIVE)
+  
+  applications    Application[]
+  assignments     Assignment[]
+  
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+
+  @@map("opportunities")
+}
+
+model VolunteerSkill {
+  id          String    @id @default(uuid()) @db.Uuid
+  volunteerId String    @map("volunteer_id") @db.Uuid
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  
+  category    SkillCategory
+  name        String
+  level       SkillLevel
+  verified    Boolean   @default(false)
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@unique([volunteerId, category, name])
+  @@map("volunteer_skills")
+}
+
+model VolunteerAvailability {
+  id          String       @id @default(uuid()) @db.Uuid
+  volunteerId String       @map("volunteer_id") @db.Uuid
+  volunteer   Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  
+  dayOfWeek   Int          @map("day_of_week") // 0 = Sunday, 1 = Monday, etc.
+  startTime   String       @map("start_time") // Format: "HH:mm"
+  endTime     String       @map("end_time")   // Format: "HH:mm"
+  timezone    String       @default("UTC")
+  
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  @@map("volunteer_availability")
+}
+
+model Application {
+  id             String            @id @default(uuid()) @db.Uuid
+  opportunityId  String            @map("opportunity_id") @db.Uuid
+  opportunity    Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  volunteerId    String            @map("volunteer_id") @db.Uuid
+  volunteer      Volunteer         @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  organizationId String            @map("organization_id") @db.Uuid
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  coverLetter    String?           @map("cover_letter")
+  status         ApplicationStatus @default(PENDING)
+  
+  appliedAt      DateTime          @default(now()) @map("applied_at")
+  reviewedAt     DateTime?         @map("reviewed_at")
+  
+  assignment     Assignment?
+
+  @@unique([opportunityId, volunteerId])
+  @@map("applications")
+}
+
+model Assignment {
+  id             String           @id @default(uuid()) @db.Uuid
+  applicationId  String           @unique @map("application_id") @db.Uuid
+  application    Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  opportunityId  String           @map("opportunity_id") @db.Uuid
+  opportunity    Opportunity      @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  volunteerId    String           @map("volunteer_id") @db.Uuid
+  volunteer      Volunteer        @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  organizationId String           @map("organization_id") @db.Uuid
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  status         AssignmentStatus @default(ACTIVE)
+  hoursLogged    Int              @default(0) @map("hours_logged")
+  startDate      DateTime         @default(now()) @map("start_date")
+  endDate        DateTime?        @map("end_date")
+  
+  sessions       Session[]
+  reviews        Review[]
+  
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  @@map("assignments")
+}
+
+model Session {
+  id           String     @id @default(uuid()) @db.Uuid
+  assignmentId String     @map("assignment_id") @db.Uuid
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  
+  scheduledAt  DateTime   @map("scheduled_at")
+  duration     Int        // Duration in minutes
+  status       SessionStatus @default(SCHEDULED)
+  notes        String?
+  
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@map("sessions")
+}
+
+model Review {
+  id             String     @id @default(uuid()) @db.Uuid
+  assignmentId   String     @map("assignment_id") @db.Uuid
+  assignment     Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  reviewerId     String     @map("reviewer_id") @db.Uuid
+  revieweeId     String     @map("reviewee_id") @db.Uuid
+
+  reviewerVolunteer Volunteer?     @relation("VolunteerReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade, map: "fk_reviewer_vol")
+  revieweeVolunteer Volunteer?     @relation("VolunteerReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade, map: "fk_reviewee_vol")
+
+  reviewerOrganization Organization? @relation("OrgReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade, map: "fk_reviewer_org")
+  revieweeOrganization Organization? @relation("OrgReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade, map: "fk_reviewee_org")
+
+  rating         Int
+  comment        String?
+
+  createdAt      DateTime   @default(now()) @map("created_at")
+
+  @@map("reviews")
+}
+model Message {
+  id         String      @id @default(uuid()) @db.Uuid
+  senderId   String      @map("sender_id") @db.Uuid
+  sender     Profile     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String      @map("receiver_id") @db.Uuid
+  receiver   Profile     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  subject    String?
+  content    String
+  isRead     Boolean     @default(false) @map("is_read")
+  
+  createdAt  DateTime    @default(now()) @map("created_at")
+
+  @@map("messages")
+}
+
+// Enums
+enum UserType {
+  VOLUNTEER
+  ORGANIZATION
+}
+
+enum OpportunityCategory {
+  MEDICAL
+  MENTAL_HEALTH
+  EDUCATION
+  EMERGENCY
+  LOGISTICS
+  LEGAL
+  TECHNOLOGY
+  FUNDRAISING
+  OTHER
+}
+
+enum OpportunityType {
+  REMOTE
+  ON_SITE
+  HYBRID
+}
+
+enum UrgencyLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum OpportunityStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+  COMPLETED
+}
+
+enum SkillCategory {
+  MEDICAL
+  MENTAL_HEALTH
+  EDUCATION
+  TECHNOLOGY
+  LEGAL
+  LOGISTICS
+  COMMUNICATION
+  MANAGEMENT
+  OTHER
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum AssignmentStatus {
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum SessionStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
