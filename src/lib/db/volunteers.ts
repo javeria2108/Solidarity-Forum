@@ -49,7 +49,7 @@ export async function getVolunteerProfile(profileId: string) {
           status: "ACTIVE",
         },
       },
-      reviews: {
+      reviewsGiven: {
         include: {
           assignment: {
             include: {
@@ -72,7 +72,7 @@ export async function getVolunteerStats(volunteerId: string) {
         },
       },
       applications: true,
-      reviews: true,
+      reviewsGiven: true,
     },
   });
 
@@ -100,11 +100,11 @@ export async function getVolunteerStats(volunteerId: string) {
   ).length;
 
   const avgRating =
-    volunteer.reviews.length > 0
-      ? volunteer.reviews.reduce(
+    volunteer.reviewsGiven.length > 0
+      ? volunteer.reviewsGiven.reduce(
           (sum: any, review: { rating: any }) => sum + review.rating,
           0
-        ) / volunteer.reviews.length
+        ) / volunteer.reviewsGiven.length
       : 0;
 
   return {

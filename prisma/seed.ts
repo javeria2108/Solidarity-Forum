@@ -5,7 +5,7 @@ import {
   OpportunityCategory,
   OpportunityType,
   UrgencyLevel,
-} from "@/generated/prisma";
+} from "../src/generated/prisma";
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "crypto";
 
