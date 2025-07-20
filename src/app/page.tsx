@@ -199,7 +199,7 @@ export default function LandingPage() {
               </h3>
               <p className="text-gray-600">
                 Create your profile and tell us about your expertise,
-                availability, and how you'd like to help.
+                availability, and how you&apos;d like to help.
               </p>
             </div>
 

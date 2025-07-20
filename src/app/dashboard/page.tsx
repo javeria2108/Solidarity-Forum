@@ -1,7 +1,7 @@
 // src/app/dashboard/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,17 +11,14 @@ import {
   Heart,
   Users,
   Globe,
-  Shield,
   MapPin,
   Clock,
   User,
   Plus,
   Search,
-  Filter,
   Bell,
   Settings,
   LogOut,
-  Calendar,
   MessageCircle,
   Star,
   TrendingUp,

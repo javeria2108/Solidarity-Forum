@@ -2,11 +2,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getOrganizationProfile } from "@/lib/db/organizations";
+import {
+  OpportunityCategory,
+  OpportunityStatus,
+  OpportunityType,
+  UrgencyLevel,
+} from "@/generated/prisma";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+type OpportunityWithCounts = {
+  id: string;
+  title: string;
+  description: string;
+  category: OpportunityCategory;
+  type: OpportunityType;
+  urgency: UrgencyLevel;
+  status: OpportunityStatus;
+  _count: {
+    applications: number;
+    assignments: number;
+  };
+  maxVolunteers: number;
+  createdAt: Date;
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -34,18 +56,7 @@ export async function GET(request: NextRequest) {
     }
 
     const opportunities = organizationProfile.opportunities.map(
-      (opportunity: {
-        id: any;
-        title: any;
-        description: any;
-        category: any;
-        type: any;
-        urgency: any;
-        status: any;
-        _count: { applications: any; assignments: any };
-        maxVolunteers: any;
-        createdAt: any;
-      }) => ({
+      (opportunity: OpportunityWithCounts) => ({
         id: opportunity.id,
         title: opportunity.title,
         description: opportunity.description,

@@ -1,4 +1,3 @@
-// src/app/signup/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -26,28 +25,37 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Heart, ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { signupSchema } from "@/lib/validations/auth";
+import { z } from "zod";
+import { AuthError } from "@supabase/supabase-js";
+
+type SignUpFormData = z.infer<typeof signupSchema>;
 
 export default function SignUpPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<SignUpFormData>({
     email: "",
     password: "",
     confirmPassword: "",
     fullName: "",
-    userType: "",
+    userType: "volunteer",
     agreeToTerms: false,
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof SignUpFormData, string>>
+  >({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [authError, setAuthError] = useState("");
+  const [authError, setAuthError] = useState<string>("");
 
   const { signUp } = useAuth();
   const router = useRouter();
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = <T extends keyof SignUpFormData>(
+    field: T,
+    value: SignUpFormData[T]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
@@ -62,7 +70,7 @@ export default function SignUpPage() {
     try {
       const validatedData = signupSchema.parse(formData);
 
-      const { error } = await signUp(
+      const { error }: { error: AuthError | null } = await signUp(
         validatedData.email,
         validatedData.password,
         {
@@ -76,20 +84,16 @@ export default function SignUpPage() {
       } else {
         router.push("/dashboard");
       }
-    } catch (error) {
-      if (typeof error === "object" && error !== null && "errors" in error) {
-        const zodError = error as {
-          errors: { path: (string | number)[]; message: string }[];
-        };
-        const fieldErrors: Record<string, string> = {};
-        zodError.errors.forEach(
-          (err: { path: (string | number)[]; message: string }) => {
-            if (err.path) {
-              fieldErrors[err.path[0]] = err.message;
-            }
-          }
-        );
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const fieldErrors: Partial<Record<keyof SignUpFormData, string>> = {};
+        err.errors.forEach((zodErr) => {
+          const field = zodErr.path[0] as keyof SignUpFormData;
+          fieldErrors[field] = zodErr.message;
+        });
         setErrors(fieldErrors);
+      } else {
+        setAuthError("Unexpected error occurred.");
       }
     } finally {
       setIsLoading(false);
@@ -183,8 +187,11 @@ export default function SignUpPage() {
                 <Label>I am a</Label>
                 <Select
                   value={formData.userType}
-                  onValueChange={(value: any) =>
-                    handleInputChange("userType", value)
+                  onValueChange={(value) =>
+                    handleInputChange(
+                      "userType",
+                      value as "volunteer" | "organization"
+                    )
                   }
                 >
                   <SelectTrigger
@@ -278,19 +285,19 @@ export default function SignUpPage() {
                 )}
               </div>
 
-              {/* Terms Agreement */}
+              {/* Terms */}
               <div className="flex items-start space-x-2 pt-2">
                 <Checkbox
                   id="agreeToTerms"
                   checked={formData.agreeToTerms}
-                  onCheckedChange={(checked: any) =>
-                    handleInputChange("agreeToTerms", checked)
+                  onCheckedChange={(checked) =>
+                    handleInputChange("agreeToTerms", Boolean(checked))
                   }
                 />
                 <div className="grid gap-1.5 leading-none">
                   <Label
                     htmlFor="agreeToTerms"
-                    className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-sm font-normal leading-none"
                   >
                     I agree to the{" "}
                     <Link
@@ -313,7 +320,6 @@ export default function SignUpPage() {
                 <p className="text-sm text-red-600">{errors.agreeToTerms}</p>
               )}
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full bg-emerald-600 hover:bg-emerald-700"
@@ -347,7 +353,7 @@ export default function SignUpPage() {
 
         {/* Additional Info */}
         <div className="text-center text-xs text-gray-500">
-          By creating an account, you're joining a community dedicated to
+          By creating an account, you&apos;re joining a community dedicated to
           humanitarian aid and solidarity.
         </div>
       </div>

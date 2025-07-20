@@ -1,8 +1,8 @@
-// app/api/dashboard/volunteer/assignments/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getVolunteerProfile } from "@/lib/db/volunteers";
 
+// Use the Supabase Service Role key only in secure server-side code
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     const volunteerProfile = await getVolunteerProfile(user.id);
+
     if (!volunteerProfile) {
       return NextResponse.json(
         { error: "Volunteer profile not found" },
@@ -35,20 +36,27 @@ export async function GET(request: NextRequest) {
 
     const assignments = volunteerProfile.assignments.map(
       (assignment: {
-        id: any;
-        opportunity: { title: any; organization: { organizationName: any } };
+        id: string;
+        opportunity: {
+          title: string;
+          organization: {
+            organizationName: string;
+          };
+        };
         status: string;
-        hoursLogged: any;
-        sessions: { scheduledAt: any }[];
-        startDate: any;
-        endDate: any;
+        hoursLogged: number;
+        sessions: {
+          scheduledAt: string;
+        }[];
+        startDate: string;
+        endDate: string | null;
       }) => ({
         id: assignment.id,
         title: assignment.opportunity.title,
         organization: assignment.opportunity.organization.organizationName,
         status: assignment.status.toLowerCase(),
         hoursLogged: assignment.hoursLogged,
-        nextSession: assignment.sessions[0]?.scheduledAt || null,
+        nextSession: assignment.sessions?.[0]?.scheduledAt ?? null,
         startDate: assignment.startDate,
         endDate: assignment.endDate,
       })
