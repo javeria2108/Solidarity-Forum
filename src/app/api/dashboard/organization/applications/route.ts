@@ -35,15 +35,13 @@ export async function GET(request: NextRequest) {
 
     const applications = organizationProfile.applications.map(
       (application: {
-        id: String;
-        opportunity: { title: String };
-        volunteer: {
-          profile: { fullName: String | undefined; avatar: String | undefined };
-        };
-        status: undefined | "pending" | "accepted" | "rejected";
-        coverLetter: String | undefined;
-        appliedAt: Date;
-        reviewedAt: Date | null;
+        id: any;
+        opportunity: { title: any };
+        volunteer: { profile: { fullName: any; avatar: any } };
+        status: any;
+        coverLetter: any;
+        appliedAt: any;
+        reviewedAt: any;
       }) => ({
         id: application.id,
         opportunityTitle: application.opportunity.title,

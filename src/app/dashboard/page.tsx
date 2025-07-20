@@ -330,7 +330,7 @@ const VolunteerDashboard = () => {
               </Select>
 
               <Select
-                value={opportunityFilters.type || ""}
+                value={opportunityFilters.type || "ANY"}
                 onValueChange={(value) =>
                   setOpportunityFilters((prev) => ({
                     ...prev,
@@ -342,7 +342,7 @@ const VolunteerDashboard = () => {
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="ANY">All Types</SelectItem>
                   <SelectItem value="REMOTE">Remote</SelectItem>
                   <SelectItem value="ON_SITE">On-site</SelectItem>
                   <SelectItem value="HYBRID">Hybrid</SelectItem>
@@ -350,7 +350,7 @@ const VolunteerDashboard = () => {
               </Select>
 
               <Select
-                value={opportunityFilters.urgency || ""}
+                value={opportunityFilters.urgency || "ANY"}
                 onValueChange={(value) =>
                   setOpportunityFilters((prev) => ({
                     ...prev,
@@ -362,7 +362,7 @@ const VolunteerDashboard = () => {
                   <SelectValue placeholder="Urgency" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Urgencies</SelectItem>
+                  <SelectItem value="ANY">All Urgencies</SelectItem>
                   <SelectItem value="CRITICAL">Critical</SelectItem>
                   <SelectItem value="HIGH">High</SelectItem>
                   <SelectItem value="MEDIUM">Medium</SelectItem>

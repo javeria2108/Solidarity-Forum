@@ -1,8 +1,8 @@
 import {
   OpportunityCategory,
-  OpportunityStatus,
   OpportunityType,
   UrgencyLevel,
+  OpportunityStatus,
 } from "@/generated/prisma";
 import { prisma } from "../prisma";
 
