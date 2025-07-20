@@ -1,9 +1,10 @@
 // lib/db/volunteers.ts
+
 import { prisma } from "../prisma";
-import { SkillCategory, SkillLevel } from "@/generated/prisma";
+import { Prisma, SkillCategory, SkillLevel } from "@/generated/prisma";
 
 export async function getVolunteerProfile(profileId: string) {
-  return await prisma.volunteer.findUnique({
+  return (await prisma.volunteer.findUnique({
     where: { profileId },
     include: {
       profile: true,
@@ -58,7 +59,7 @@ export async function getVolunteerProfile(profileId: string) {
         },
       },
     },
-  });
+  })) as Prisma.PromiseReturnType<typeof prisma.volunteer.findUnique>;
 }
 
 export async function getVolunteerStats(volunteerId: string) {
@@ -79,19 +80,16 @@ export async function getVolunteerStats(volunteerId: string) {
 
   const totalHours =
     volunteer.assignments.reduce(
-      (sum: any, assignment: { sessions: any[] }) => {
+      (sum: number, assignment: { sessions: any[] }) => {
         return (
           sum +
-          assignment.sessions.reduce(
-            (sessionSum: any, session: { duration: any }) => {
-              return sessionSum + (session.duration || 0);
-            },
-            0
-          )
+          assignment.sessions.reduce((sessionSum: number, session) => {
+            return sessionSum + (session.duration || 0);
+          }, 0)
         );
       },
       0
-    ) / 60; // Convert minutes to hours
+    ) / 60;
 
   const peopleHelped = volunteer.assignments.filter(
     (assignment: { status: string }) => assignment.status === "COMPLETED"
