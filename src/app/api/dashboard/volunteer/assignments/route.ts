@@ -34,35 +34,35 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const assignments = volunteerProfile.assignments.map(
-      (assignment: {
-        id: string;
-        opportunity: {
-          title: string;
-          organization: {
-            organizationName: string;
-          };
-        };
-        status: string;
-        hoursLogged: number;
-        sessions: {
-          scheduledAt: string;
-        }[];
-        startDate: string;
-        endDate: string | null;
-      }) => ({
-        id: assignment.id,
-        title: assignment.opportunity.title,
-        organization: assignment.opportunity.organization.organizationName,
-        status: assignment.status.toLowerCase(),
-        hoursLogged: assignment.hoursLogged,
-        nextSession: assignment.sessions?.[0]?.scheduledAt ?? null,
-        startDate: assignment.startDate,
-        endDate: assignment.endDate,
-      })
-    );
+    // const assignments = volunteerProfile.assignments.map(
+    //   (assignment: {
+    //     id: string;
+    //     opportunity: {
+    //       title: string;
+    //       organization: {
+    //         organizationName: string;
+    //       };
+    //     };
+    //     status: string;
+    //     hoursLogged: number;
+    //     sessions: {
+    //       scheduledAt: string;
+    //     }[];
+    //     startDate: string;
+    //     endDate: string | null;
+    //   }) => ({
+    //     id: assignment.id,
+    //     title: assignment.opportunity.title,
+    //     organization: assignment.opportunity.organization.organizationName,
+    //     status: assignment.status.toLowerCase(),
+    //     hoursLogged: assignment.hoursLogged,
+    //     nextSession: assignment.sessions?.[0]?.scheduledAt ?? null,
+    //     startDate: assignment.startDate,
+    //     endDate: assignment.endDate,
+    //   })
+    // );
 
-    return NextResponse.json({ assignments });
+    return NextResponse.json("assignments", {});
   } catch (error) {
     console.error("Error fetching volunteer assignments:", error);
     return NextResponse.json(
